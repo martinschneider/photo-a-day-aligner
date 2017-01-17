@@ -23,17 +23,12 @@ __all__ = (
     'get_face_mask',
     'LandmarkFinder',
     'NoFaces',
-    'TooManyFaces',
 )
 
 
 import cv2
 import dlib
 import numpy
-
-
-class TooManyFaces(Exception):
-    pass
 
 
 class NoFaces(Exception):
@@ -49,7 +44,12 @@ class LandmarkFinder(object):
         rects = self.detector(im, 1)
         
         if len(rects) > 1:
-            raise TooManyFaces
+            logging.info("Too many faces, picking largest")
+            sizes = [];
+            for k, d in enumerate(rects):
+	    	  sizes.append(abs(d.top()-d.bottom())*abs(d.left()-d.right()))
+            rects[0] = rects[sizes.index(max(sizes))]
+            
         if len(rects) == 0:
             raise NoFaces
 

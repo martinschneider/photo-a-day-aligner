@@ -29,6 +29,7 @@ __all__ = (
 import cv2
 import dlib
 import numpy
+import logging
 
 
 class NoFaces(Exception):
@@ -45,9 +46,9 @@ class LandmarkFinder(object):
         
         if len(rects) > 1:
             logging.info("Too many faces, picking largest")
-            sizes = [];
+            sizes = []
             for k, d in enumerate(rects):
-	    	  sizes.append(abs(d.top()-d.bottom())*abs(d.left()-d.right()))
+                sizes.append(abs(d.top()-d.bottom())*abs(d.left()-d.right()))
             rects[0] = rects[sizes.index(max(sizes))]
             
         if len(rects) == 0:

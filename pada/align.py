@@ -113,8 +113,6 @@ def get_ims_and_landmarks(images, landmark_finder):
             l = landmark_finder.get(im)
         except landmarks.NoFaces:
             logger.warn("No faces in image %s", n)
-        except landmarks.TooManyFaces:
-            logger.warn("Too many faces in image %s", n)
         else:
             yield (n, im, l)
             count += 1

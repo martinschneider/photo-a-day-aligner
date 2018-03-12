@@ -1,0 +1,3 @@
+*.pyc
+pada/__pycache__
+venv

@@ -33,6 +33,7 @@ import cv2
 import dlib
 import numpy
 import scipy
+import exifread
 
 from . import landmarks
 from .logging import logger
@@ -42,11 +43,17 @@ def read_ims(names, img_thresh):
     count = 0
     total = 0
     prev_im = None
+    exif_date = None
     for n in names:
         logger.debug("Reading image %s", n)
         im = cv2.imread(n)
         if prev_im is None or numpy.linalg.norm(prev_im - im) > img_thresh:
-            yield (n, im)
+            logger.debug("Reading exif %s", n)
+            with open(n, 'rb') as exf:
+                tags = exifread.process_file(exf)
+                if 'EXIF DateTimeOriginal' in tags:
+                   exif_date = str(tags['EXIF DateTimeOriginal']).replace(':', '-').split(' ')[0]
+            yield (n, im, exif_date)
             count += 1
             prev_im = im
         else:
@@ -108,13 +115,13 @@ def warp_im(im, M, dshape):
 
 def get_ims_and_landmarks(images, landmark_finder):
     count = 0
-    for n, im in images:
+    for n, im, exif_date in images:
         try:
             l = landmark_finder.get(im)
         except landmarks.NoFaces:
             logger.warn("No faces in image %s", n)
         else:
-            yield (n, im, l)
+            yield (n, im, l, exif_date)
             count += 1
     logger.info("Read %s images with landmarks", count)
 
@@ -169,7 +176,7 @@ def align_images(input_files, out_path, out_extension, landmark_finder,
     ims_and_landmarks = get_ims_and_landmarks(
                                   read_ims(input_files, img_thresh=img_thresh),
                                   landmark_finder)
-    for idx, (n, im, lms) in enumerate(ims_and_landmarks):
+    for idx, (n, im, lms, exif_date) in enumerate(ims_and_landmarks):
         mask = landmarks.get_face_mask(im.shape, lms)
         masked_im = mask[:, :, numpy.newaxis] * im
         color = ((numpy.sum(masked_im, axis=(0, 1)) /
@@ -183,6 +190,8 @@ def align_images(input_files, out_path, out_extension, landmark_finder,
         warped_corrected = warped * ref_color / color
         out_fname = os.path.join(out_path,
                                  "{:08d}.{}".format(idx, out_extension))
+        cv2.putText(warped_corrected, exif_date, (50, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 0), 2, cv2.LINE_AA)
+        cv2.putText(warped_corrected, exif_date, (50, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 1, cv2.LINE_AA)
         cv2.imwrite(out_fname, warped_corrected)
         logger.debug("Wrote file %s", out_fname)
 

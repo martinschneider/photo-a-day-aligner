@@ -27,3 +27,6 @@ ffmpeg -y -threads 6 -loglevel error -framerate 5/1 -i $OUT_FOLDER/aligned/%08d.
 python $MUZICA_GEN
 printf "file '%s'\n" $OUT_FOLDER/input/*.jpg > $OUT_FOLDER/input.txt
 ffmpeg -y -threads 6 -loglevel error -f concat -safe 0 -i $OUT_FOLDER/input.txt -f concat -safe 0 -i $MUZICA_FILE -shortest -r 15/1 -c:v libx264 -preset slow -crf 18 -pix_fmt yuv420p -movflags +faststart -r 30 $OUT_FOLDER/out/face_lapse_input.mp4
+
+# 60 fps muzica rapida
+# ffmpeg -y -threads 6 -loglevel error -framerate 60/1 -i "/run/media/iomihai/dashcam2/timelapse/face_lapse/aligned/%08d.jpg" -i '/run/media/iomihai/dashcam2/timelapse/muzica/Volcano_Trap.mp3' -filter:a "atempo=2.0,atempo=2.0" -shortest -c:v libx264 -preset slow -crf 18 -pix_fmt yuv420p -movflags +faststart -r 60 "/run/media/iomihai/dashcam2/timelapse/face_lapse/out/face_lapse_60.mp4"

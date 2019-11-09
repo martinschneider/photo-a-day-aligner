@@ -1,0 +1,8 @@
+exiftran -ai input/*
+for filename in input/*.jpeg; do
+    basename="$(basename "$filename" .jpeg)"
+    convert "input/$basename.jpeg" -resize "768x1024!" "input_resize/$basename.jpeg"
+done
+
+ffmpeg -y -threads 6 -loglevel error -framerate 5/1 -i /run/media/iomihai/dashcam2/timelapse/face_lapse/ruxandra/aligned/%08d.jpg -c:v libx264 -preset slow -crf 18 -pix_fmt yuv420p -movflags +faststart -r 30 /run/media/iomihai/dashcam2/timelapse/face_lapse/ruxandra/out/face_lapse_5.mp4
+-f concat -safe 0 -i /run/media/iomihai/dashcam2/timelapse/concat/muzica_random.txt -shortest

@@ -23,8 +23,7 @@ See below for usage details.
 1. Create a directory for your project.
 
 2. Copy `examples/pada.conf` into it. Change `predictor_path` to point to your
-   dlib landmarks, [downloadable from here](http://sourceforge.net/projects/
-dclib/files/dlib/v18.10/shape_predictor_68_face_landmarks.dat.bz2).
+   dlib landmarks, [downloadable from here](http://sourceforge.net/projects/dclib/files/dlib/v18.10/shape_predictor_68_face_landmarks.dat.bz2).
 
 3. Create a sub-directory `input`, and place your input frames into it. When
    lexicographically sorted the file names should be in the correct order.

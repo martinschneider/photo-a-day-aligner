@@ -4,15 +4,15 @@ A tools to help with daily self-portrait projects:
 
 
 * `pada.py` which has a couple of sub-commands:
- * `align`: Take a set of photo-a-day images, and align them based on the
-   detected face, and perform RGB scaling so that all the faces have the same
-   average RGB value. Also outputs an image `mask.png` which is used by the
-   next script. Duplicate images, images with no face, and images with more than
-   one face are dropped at this stage.
- * `framedrop`: Produce a file list, based on the output files of the above
-   script. The output will have approximately `(100 / N)` % of the input images
-   (`N` is `10` by default). Output frames are selected to avoid temporal
-   discontinuities in the face area.
+  * `align`: Take a set of photo-a-day images, and align them based on the
+    detected face, and perform RGB scaling so that all the faces have the same
+    average RGB value. Also outputs an image `mask.png` which is used by the
+    next script. Duplicate images, images with no face, and images with more than
+    one face are dropped at this stage.
+  * `framedrop`: Produce a file list, based on the output files of the above
+    script. The output will have approximately `(100 / N)` % of the input images
+    (`N` is `10` by default). Output frames are selected to avoid temporal
+    discontinuities in the face area.
 * `make_vid.sh`: A shell script which calls `mencoder` to encode the file list
   produced by the above into a .h264 MP4 file.
 
